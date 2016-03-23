@@ -1,0 +1,3 @@
+slacker
+websocket
+-e git+https://github.com/uw-it-aca/canvas-support-tools.git#egg=canvas_admin
