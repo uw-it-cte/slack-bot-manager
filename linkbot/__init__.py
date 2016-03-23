@@ -24,7 +24,7 @@ class LinkBot(SlackBotManager):
                 j = json.loads(rcv)
                 if j['type'] == 'message':
                     for tag, link, quips in getattr(settings, 'LINK_MATCHES', []):
-                        match = tag.match(j['text'])
+                        match = re.match(tag, j['text'],  re.I))
                         if match:
                             quip = quips[randint(0,len(quips)-1)] if quips else '%s'
                             slack.chat.post_message(

@@ -1,4 +1,4 @@
-from django.utils.log import getLogger
+from logging import getLogger
 from django.db import connection
 from manager.models import SlackBot
 from multiprocessing import Process

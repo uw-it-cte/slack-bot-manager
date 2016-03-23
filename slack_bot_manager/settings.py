@@ -104,15 +104,15 @@ LINKBOT_QUIPS=[
 
 LINKBOT_MATCHES=[
     (
-        re.compile(r'^(.* |)((req|inc)[0-9]+)([ ?.,].*|)', re.I),
+        r'^(.* |)((req|inc)[0-9]+)([ ?.,].*|)',
         '<https://uw.service-now.com/u_simple_requests.do?sysparm_type=labels&sysparm_table=u_simple_requests&sysparm_query=number=%s|%s>',
         LINKBOT_QUIPS
     ),
     (
-        re.compile(r'^(.* |)((%s)-[0-9]+)([ ?.,].*|)' % ('|'.join([
+        r'^(.* |)((%s)-[0-9]+)([ ?.,].*|)' % ('|'.join([
                         'ALP','CAL','CAT','CVS','RAD','EWS','GRADE','GRP','IDCARD',
                         'IDCARD','LCRA','MM','MSCASUB','MYUW','MYPLAN','MUWM',
-                        'PAN','PWS','SCOUT','SPOT','SQLSHR','SWS'])), re.I),
+                        'PAN','PWS','SCOUT','SPOT','SQLSHR','SWS'])),
         '<https://jira.cac.washington.edu/browse/%s|%s>',
         LINKBOT_QUIPS
     )
