@@ -1,5 +1,5 @@
 from django.conf.urls import patterns, url, include
-from manager.views.bots import BotView, BotListView
+from bot_manager.views.bots import BotView, BotListView
 
 
 urlpatterns = patterns(

@@ -8,6 +8,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.7/ref/settings/
 """
 
+import os
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
 BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -36,14 +38,15 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'manager',
+    'bot_manager',
     'linkbot',
+    'sslserver',
 )
 
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -84,36 +87,80 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+# Logging
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format' : "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+            'datefmt' : "%d/%b/%Y %H:%M:%S"
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(VAR_ROOT, 'slackbot.log'),
+            'formatter': 'verbose'
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers':['file'],
+            'propagate': True,
+            'level':'DEBUG',
+        },
+        'bot_manager': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+        },
+        'linkbot': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+        },
+    }
+}
 
-### Slack API Access Key
-SLACK_ACCESS_KEY='barf-3443977346-C2J58ecuMIf7zPCBccUdmE5g'
-
-
-### LINK BOT CONFIG
-LINKBOT_QUIPS=[
+###
+### LINKBOT CONFIG
+###
+LINKBOT_QUIPS = [
     '%s',
     'linkbot noticed a link!  %s',
     'Oh, here it is... %s',
-    'Maybe this will help?  %s',
+    'Maybe this, %s, will help?',
     'Click me!  %s',
     'Here, let me link that for you... %s',
     'Couldn\'t help but notice %s was mentioned...',
     'Not that I was eavesdropping, but did you mention %s?',
-    'hmmmm, try...  %s'
+    'hmmmm, did you mean %s?',
+    '%s?  An epic, yet approachable tale...',
+    '%s?  Reminds me of a story...',
 ]
 
-LINKBOT_MATCHES=[
-    (
-        r'^(.* |)((req|inc)[0-9]+)([ ?.,].*|)',
-        '<https://uw.service-now.com/u_simple_requests.do?sysparm_type=labels&sysparm_table=u_simple_requests&sysparm_query=number=%s|%s>',
-        LINKBOT_QUIPS
-    ),
-    (
-        r'^(.* |)((%s)-[0-9]+)([ ?.,].*|)' % ('|'.join([
+LINKBOT_CONFIG = {
+    'API_TOKEN': os.environ.get('LINKBOT_API_TOKEN'),
+    'LINKBOTS': [
+        {
+            'MATCH': '(req|inc)[0-9]+',
+            'LINK': '<https://uw.service-now.com/u_simple_requests.do?sysparm_type=labels&sysparm_table=u_simple_requests&sysparm_query=number=%s|%s>',
+            'QUIPS': LINKBOT_QUIPS
+        },
+        {
+            'MATCH': '(%s)\-[0-9]+' % ('|'.join([
                         'ALP','CAL','CAT','CVS','RAD','EWS','GRADE','GRP','IDCARD',
                         'IDCARD','LCRA','MM','MSCASUB','MYUW','MYPLAN','MUWM',
-                        'PAN','PWS','SCOUT','SPOT','SQLSHR','SWS'])),
-        '<https://jira.cac.washington.edu/browse/%s|%s>',
-        LINKBOT_QUIPS
-    )
-]
+                        'PAN','PWS','SCOUT','SPOT','SQLSHR','SWS','MSCASUB'])),
+            'LINK': '<https://jira.cac.washington.edu/browse/%s|%s>',
+            'QUIPS': LINKBOT_QUIPS,
+            'LINK_CLASS': 'JiraLinkBot',
+            'JIRA_HOST': os.environ.get('LINKBOT_JIRA_HOST'),
+            'JIRA_LOGIN': os.environ.get('LINKBOT_JIRA_LOGIN'),
+            'JIRA_PASSWORD': os.environ.get('LINKBOT_JIRA_PASSWORD')
+        }
+    ]
+}

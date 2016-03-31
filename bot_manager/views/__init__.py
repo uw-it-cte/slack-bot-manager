@@ -1,7 +1,5 @@
 from django.conf import settings
 from django.http import HttpResponse
-from userservice.user import UserService
-from authz_group import Group
 
 
 class RESTDispatchAuthException(Exception): pass
@@ -21,7 +19,7 @@ class RESTDispatch(object):
         try:
             self._auth(request)
         except RESTDispatchAuthException as ex:
-            return error_response(401, msg='%s' % (ex)):
+            return error_response(401, msg='%s' % (ex))
 
         if "GET" == request.META['REQUEST_METHOD']:
             if hasattr(self, "GET"):

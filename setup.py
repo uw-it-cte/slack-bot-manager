@@ -15,7 +15,7 @@ setup(
     include_package_data=True,
     install_requires = [
         'setuptools',
-        'django>=1.7',
+        'django<2.0',
         'nameparser>=0.2.8'
     ],
     license='Apache License, Version 2.0',  # example license

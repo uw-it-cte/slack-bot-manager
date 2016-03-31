@@ -2,18 +2,19 @@ from django.db import models
 
 # Create your models here.
 
-class SlackBot(models.Model):
-    pid = models.SmallIntegerField()
-    name = models.CharField(max_length=128)
+class Bot(models.Model):
+    pid = models.SmallIntegerField(default=0)
+    class_name = models.CharField(max_length=128)
+    module_name = models.CharField(max_length=128)
     description = models.CharField(max_length=128)
-    changed_by = models.CharField(max_length=32)
+    changed_by = models.CharField(max_length=32,null=True)
     changed_date = models.DateTimeField(null=True)
     is_active = models.NullBooleanField()
 
     def json_data(self):
         return {
-            'job_id': self.pk,
-            'name': self.name,
+            'bot_id': self.pk,
+            'name': self.class_name,
             'description': self.description,
             'changed_by': self.changed_by,
             'changed_date': localtime(self.changed_date).isoformat() if (
