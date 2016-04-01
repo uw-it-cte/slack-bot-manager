@@ -60,7 +60,6 @@ class BotView(RESTDispatch):
             bot = Bot.objects.get(id=bot_id)
             bot.is_active = bot_is_active(bot.pid)
             data = json.loads(request.body).get('bot', {})
-            import pdb; pdb.set_trace()
             if 'is_active' in data:
                 if data['is_active']:
                     if not bot.is_active:
