@@ -74,15 +74,15 @@ class BotView(RESTDispatch):
                         bot.save()
                         self._log.info('%s started Bot "%s"' % (
                             bot.changed_by, bot.class_name))
-                    elif bot.is_active:
-                        ### stop bot
-                        if bot_disable(bot.pid):
-                            bot.is_active = False
-                            self._log.info('%s stopped Bot "%s"' % (
-                                bot.changed_by, bot.class_name))
-                        else:
-                            return self.json_response(
-                                '{"error":"cannot stop bot %s"}' % bot_id, status=500)
+                elif bot.is_active:
+                    ### stop bot
+                    if bot_disable(bot.pid):
+                        bot.is_active = False
+                        self._log.info('%s stopped Bot "%s"' % (
+                            bot.changed_by, bot.class_name))
+                    else:
+                        return self.json_response(
+                            '{"error":"cannot stop bot %s"}' % bot_id, status=500)
             return self.json_response(json.dumps({'bot': bot.json_data()}))
         except Bot.DoesNotExist:
             return self.json_response(
