@@ -3,6 +3,7 @@
 {% load staticfiles %}
 
 {% block extra_css %}
+<link rel="stylesheet" type="text/less" href="{% static 'bot_manager/css/mobile.less' %}" />
 <link href="https://gitcdn.github.io/bootstrap-toggle/2.2.0/css/bootstrap-toggle.min.css" rel="stylesheet">
 {% endblock %}
 
@@ -17,7 +18,7 @@
 
 <h2>Slack Bots</h2>
 
-<div class="user-manager pull-left">
+<div class="bot-manager pull-left">
     <div class="query-tabs clearfix">
       <table id="bots-table" class="admin-table table table-striped">
         <thead>
