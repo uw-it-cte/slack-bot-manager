@@ -1,3 +1,4 @@
+from django.conf import settings
 from logging import getLogger
 from django.db import connection
 from bot_manager.models import Bot
@@ -9,15 +10,18 @@ import json
 
 class SlackBot(object):
 
-    def __init__(self, api_token=None):
+    SETTINGS = None
+    DESCRIPTION = "base class"
+
+    def __init__(self):
+        api_token = getattr(settings, self.SETTINGS)['API_TOKEN']
         self._slack = Slacker(api_token)
         self._robo_id = self._slack.auth.test().body.get('user_id')
         self._websocket = None
         self._log = getLogger(__name__)
 
-    def launch(self, launcher):
+    def launch(self):
         # background the bot
-        self._log.info('Starting %s' % (self.name))
         connection.close()
         p = Process(target=self.bot)
         p.start()

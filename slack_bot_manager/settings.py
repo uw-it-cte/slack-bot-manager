@@ -104,7 +104,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': os.path.join(VAR_ROOT, 'slackbot.log'),
+            'filename': os.path.join(BASE_DIR, 'slackbot.log'),
             'formatter': 'verbose'
         },
     },

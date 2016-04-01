@@ -7,7 +7,7 @@ import re
 class LinkBotSeenException(Exception): pass
 
 
-class LinkBot(object):
+class LinkBotMessage(object):
     def __init__(self, conf):
         self._conf = conf
         self._seen = []
@@ -37,7 +37,7 @@ class LinkBot(object):
         return self.quip(link)
 
 
-class JiraLinkBot(LinkBot):
+class JiraLinkBotMessage(LinkBotMessage):
     def build_message(self, link):
         msg = self.quip(link)
         try:
@@ -60,30 +60,21 @@ class JiraLinkBot(LinkBot):
                 }.get(c,c) for c in text)
 
 
-class SlackBotForLinks(SlackBot):
+class LinkBot(SlackBot):
     """ Implements Slack Link Bot
     """
 
-    description = "Turns ticket and incident tags into links"
-
-    def __init__(self):
-        ## instantiate class with slack access key,
-        ## and any specifc config
-        conf = getattr(settings, 'LINKBOT_CONFIG', {
-            'API_TOKEN': None,
-            'LINKBOTS': []
-        })
-        super(LinkBot, self).__init__(api_token=conf['API_TOKEN'])
-        self.linkbots = conf['LINKBOTS']
+    SETTINGS = "LINKBOT_CONFIG"
+    DESCRIPTION = "Turns ticket and incident tags into links"
 
     def process_message(self, msg):
         try:
             if msg['type'] == 'message':
-                for bot_conf in self.linkbots:
+                for bot_conf in getattr(settings, self.SETTINGS)['LINKBOTS']:
                     try:
                         link_class = globals()[bot_conf['LINK_CLASS']]
                     except KeyError:
-                        link_class = LinkBot
+                        link_class = LinkBotMessage
 
                     linkbot = link_class(bot_conf)
 
