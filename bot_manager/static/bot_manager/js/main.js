@@ -28,9 +28,11 @@ $(document).ready(function () {
             data: '{"bot": {"is_active": ' + $(this).is(':checked') + '}}',
             success: function (data) {
 		        if (data.hasOwnProperty('bot')) {
-		            input.closest('td').prev()
-                         .html(format_date(data.bot.changed_date) +
-                               ' (' + data.bot.changed_by + ')');
+                    var change = format_date(data.bot.changed_date) +
+                            (data.bot.changed_by
+                             ? ' (' + data.bot.changed_by + ')'
+                             : '');
+		            input.closest('td').prev().html(change);
 		        }
             },
             error: function (xhr) {
