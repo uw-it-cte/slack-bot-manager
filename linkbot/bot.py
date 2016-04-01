@@ -1,5 +1,6 @@
 from django.conf import settings
 from bot_manager.slackbot import SlackBot
+from jira import JIRA
 from random import randint
 import re
 
