@@ -1,3 +1,5 @@
 slacker
 websocket-client
--e git+https://github.com/uw-it-aca/canvas-support-tools.git#egg=canvas_admin
+python-dateutil
+django-compressor<2.0
+-e git+https://github.com/uw-it-aca/django-supporttools#egg=django_supporttools

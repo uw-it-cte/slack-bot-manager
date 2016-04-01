@@ -1,0 +1,11 @@
+{% load templatetag_handlebars %}
+{% tplhandlebars "bot-table-row" %}
+{{# each bots}}
+<tr>
+    <td>{{ name }}</td>
+    <td>{{ description }}</td>
+    <td>{{ changed_date }}{{# if changed_by}} ({{ changed_by }}){{/if}}</td>
+    <td><input type="checkbox" class="toggle-bot" data-bot-id="{{ bot_id }}" {{# if is_active}}checked="checked" {{/if}}data-toggle="toggle" data-onstyle="success" data-on="Running" data-off="Stopped"/></td>
+</tr>
+{{/each}}
+{% endtplhandlebars %}

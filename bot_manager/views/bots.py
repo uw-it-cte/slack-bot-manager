@@ -30,6 +30,7 @@ def bot_is_active(pid):
 def bot_disable(pid):
     try:
         os.kill(pid, signal.SIGKILL)
+        os.waitpid(pid, 0)
     except OSError:
         return False
 
