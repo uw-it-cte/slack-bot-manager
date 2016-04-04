@@ -87,7 +87,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+# Set Static file path
+PROJECT_ROOT = os.path.dirname(os.path.abspath(path.dirname(__file__)))
+STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static').replace('\\','/')
+
 
 #COMPRESSOR SETTINGS
 COMPRESS_ENABLED = False
