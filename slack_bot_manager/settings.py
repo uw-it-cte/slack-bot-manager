@@ -88,7 +88,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # Set Static file path
-PROJECT_ROOT = os.path.dirname(os.path.abspath(path.dirname(__file__)))
+PROJECT_ROOT = os.path.dirname(os.path.abspath(os.path.dirname(__file__)))
 STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static').replace('\\','/')
 
 
