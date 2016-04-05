@@ -100,6 +100,7 @@ STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static').replace('\\','/')
 COMPRESS_ENABLED = False
 COMPRESS_OFFLINE = False
 
+from socket import gethostbyname
 # Logging
 LOGGING = {
     'version': 1,
@@ -117,7 +118,7 @@ LOGGING = {
         'file': {
             'level': 'DEBUG',
             'class': 'logging.handlers.RotatingFileHandler',
-            'filename': os.path.join(BASE_DIR, 'slackbot.log'),
+            'filename': os.path.join(os.getenv('LOGPATH', '.'), 'slackbot-%s.log' % gethostbyname()),
             'formatter': 'verbose'
         },
     },
