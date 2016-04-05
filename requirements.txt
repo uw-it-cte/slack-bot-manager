@@ -4,3 +4,5 @@ python-dateutil
 django-compressor<2.0
 jira
 -e git+https://github.com/uw-it-aca/django-supporttools#egg=django_supporttools
+--find-links wheelhouse
+mysql-python
