@@ -112,7 +112,6 @@ class BotListView(RESTDispatch):
             if 'django' not in app.name:
                 try:
                     path = os.path.join(app.path, 'bot.py')
-                    print path
                     module = imp.load_source('%s.bot' % (app.name), path)
                     for name, cls in inspect.getmembers(module, inspect.isclass):
                         if (cls != SlackBot and issubclass(cls, SlackBot)):
