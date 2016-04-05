@@ -71,6 +71,7 @@ class LinkBot(SlackBot):
     def process_message(self, msg):
         try:
             if msg['type'] == 'message':
+                self._log.debug('message received in %s' % msg['channel'])
                 for bot_conf in getattr(settings, self.SETTINGS)['LINKBOTS']:
                     try:
                         link_class = globals()[bot_conf['LINK_CLASS']]
@@ -86,6 +87,8 @@ class LinkBot(SlackBot):
                         try:
                             self.post_message(msg['channel'],
                                               linkbot.message(match[1]))
+                            self._log.debug(
+                                'responded to message in %s' % msg['channel'])
                         except LinkBotSeenException:
                             pass
         except KeyError:

@@ -5,4 +5,5 @@ django-compressor<2.0
 jira
 -e git+https://github.com/uw-it-aca/django-supporttools#egg=django_supporttools
 --find-links wheelhouse
+psutil==3.4.2
 mysql-python

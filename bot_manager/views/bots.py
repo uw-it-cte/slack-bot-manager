@@ -11,20 +11,13 @@ import imp
 import json
 import inspect
 import os
+import psutil
 import signal
 
 
 
 def bot_is_active(pid):
-    if not pid:
-        return False
-
-    try:
-        os.kill(pid, 0)
-    except OSError:
-        return False
-
-    return True
+    return psutil.pid_exists(pid)
 
 
 def bot_disable(pid):
