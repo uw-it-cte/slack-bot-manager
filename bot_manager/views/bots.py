@@ -92,15 +92,14 @@ class BotView(RESTDispatch):
 
 
 class BotListView(RESTDispatch):
-    def __init__(self):
+    """ Retrieves a list of Bots.
+    """
+    def GET(self, request, **kwargs):
         try:
             self._reconcile_bots()
         except OperationalError:
             pass
 
-    """ Retrieves a list of Bots.
-    """
-    def GET(self, request, **kwargs):
         bots = []
         for bot in Bot.objects.all().order_by('class_name'):
             bot.is_active = bot_is_active(bot.pid)

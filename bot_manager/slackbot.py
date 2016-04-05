@@ -8,6 +8,10 @@ from websocket import create_connection
 import json
 
 
+def bot_process(bot):
+    bot()
+
+
 class SlackBot(object):
 
     SETTINGS = None
@@ -23,7 +27,7 @@ class SlackBot(object):
     def launch(self):
         # background the bot
         connection.close()
-        p = Process(target=self.bot)
+        p = Process(target=bot_process, args=(self.bot,))
         p.start()
         return p.pid
 
@@ -60,4 +64,5 @@ class SlackBot(object):
             return msg
 
     def post_message(self, channel, message):
-        self._slack.chat.post_message(channel, message, as_user=self._robo_id, parse='none')
+        self._slack.chat.post_message(
+            channel, message, as_user=self._robo_id, parse='none')
