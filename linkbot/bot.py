@@ -88,7 +88,8 @@ class LinkBot(SlackBot):
                             self.post_message(msg['channel'],
                                               linkbot.message(match[1]))
                             self._log.debug(
-                                'responded to message in %s' % msg['channel'])
+                                'responded to link %s in %s' % (
+                                    match[1], msg['channel']))
                         except LinkBotSeenException:
                             pass
         except KeyError:

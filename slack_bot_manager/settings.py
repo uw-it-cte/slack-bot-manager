@@ -26,6 +26,8 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
+SUPPORTTOOLS_PARENT_APP = 'UW-IT ACA Slack'
+SUPPORTTOOLS_PARENT_APP_URL = 'https://uw-it-aca.slack.com'
 
 # Application definition
 
@@ -37,6 +39,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'templatetag_handlebars',
+    'userservice',
     'compressor',
     'supporttools',
     'bot_manager',
@@ -46,12 +49,32 @@ INSTALLED_APPS = (
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.auth.middleware.SessionAuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+#    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'userservice.user.UserServiceMiddleware',
+    'django_mobileesp.middleware.UserAgentDetectionMiddleware',
 )
+
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+    'django.core.context_processors.debug',
+    'django.core.context_processors.i18n',
+    'django.core.context_processors.media',
+    'django.core.context_processors.request',
+    'django.core.context_processors.static',
+    'django.core.context_processors.tz',
+    'django.contrib.messages.context_processors.messages',
+    'supporttools.context_processors.supportools_globals',
+    'supporttools.context_processors.has_less_compiled',
+)
+
+from django_mobileesp.detector import agent
+DETECT_USER_AGENTS = {
+    'is_tablet': agent.detectTierTablet,
+    'is_mobile': agent.detectMobileQuick,
+}
 
 ROOT_URLCONF = 'slack_bot_manager.urls'
 
@@ -123,6 +146,11 @@ LOGGING = {
         },
     },
     'loggers': {
+        'django.db.backends': {
+            'handlers':['file'],
+            'propagate': False,
+            'level':'INFO',
+        },
         'django': {
             'handlers':['file'],
             'propagate': True,
