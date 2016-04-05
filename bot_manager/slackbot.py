@@ -8,8 +8,16 @@ from websocket import create_connection
 import json
 
 
-def bot_process(bot):
-    bot()
+def slackbot_run(bot_class):
+    bot_class().bot()
+
+
+def slackbot_launch(bot_class):
+    # background the bot
+    connection.close()
+    p = Process(target=slackbot_run, args=(bot_class,))
+    p.start()
+    return p.pid
 
 
 class SlackBot(object):
@@ -23,13 +31,6 @@ class SlackBot(object):
         self._robo_id = self._slack.auth.test().body.get('user_id')
         self._websocket = None
         self._log = getLogger(__name__)
-
-    def launch(self):
-        # background the bot
-        connection.close()
-        p = Process(target=bot_process, args=(self.bot,))
-        p.start()
-        return p.pid
 
     def bot(self):
         while True:

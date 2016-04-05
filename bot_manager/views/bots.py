@@ -3,7 +3,7 @@ from django.apps import apps
 from django.db.utils import OperationalError
 from django.middleware.csrf import get_token
 from bot_manager.models import Bot
-from bot_manager.slackbot import SlackBot
+from bot_manager.slackbot import SlackBot, slackbot_launch
 from bot_manager.views import RESTDispatch
 from logging import getLogger
 from importlib import import_module
@@ -67,7 +67,7 @@ class BotView(RESTDispatch):
                         ### start bot
                         bot_module = import_module(bot.module_name)
                         bot_class = getattr(bot_module, bot.class_name)
-                        bot.pid = bot_class().launch()
+                        bot.pid = slackbot_launch(bot_class)
                         bot.is_active = True
 
 #                        bot.changed_by = request.user.username
