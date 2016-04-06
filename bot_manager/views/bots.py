@@ -6,7 +6,7 @@ from django.db import connection
 from bot_manager.models import Bot
 from bot_manager.slackbot import SlackBot
 from bot_manager.views import RESTDispatch
-from multiprocessing import Process, get_logger
+from multiprocessing import Process, get_logger, freeze_support
 from logging import getLogger
 from importlib import import_module
 import imp
@@ -22,7 +22,9 @@ def bot_is_active(pid):
     return psutil.pid_exists(pid) if pid > 0 else False
 
 
-def run_slackbot(bot_class):
+def run_slackbot(bot_module_name, bot_class_name):
+    bot_module = import_module(bot_module_name)
+    bot_class = getattr(bot_module, bot_class_name)
     bot_class(logger=get_logger()).bot()
 
 
@@ -55,9 +57,7 @@ class BotView(RESTDispatch):
                 if data['is_active']:
                     if not bot.is_active:
                         ### start bot
-                        bot_module = import_module(bot.module_name)
-                        bot_class = getattr(bot_module, bot.class_name)
-                        bot.pid = self._launch(bot_class)
+                        bot.pid = self._launch(bot.module_name, bot.class_name)
                         bot.is_active = True
 
 #                        bot.changed_by = request.user.username
@@ -81,10 +81,11 @@ class BotView(RESTDispatch):
             return self.json_response(
                 '{"error":"bot %s not found"}' % bot_id, status=404)
 
-    def _launch(self, bot_class):
+    def _launch(self, bot_module, bot_class):
         # background the bot
         connection.close()
-        p = Process(target=run_slackbot, args=(bot_class,))
+        freeze_support()
+        p = Process(target=run_slackbot, args=(bot_module, bot_class,))
         p.start()
         return p.pid
 
