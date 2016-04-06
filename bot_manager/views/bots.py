@@ -17,15 +17,16 @@ import signal
 
 
 def bot_is_active(pid):
-    return psutil.pid_exists(pid)
+    return psutil.pid_exists(pid) if pid > 0 else False
 
 
 def bot_disable(pid):
-    try:
-        os.kill(pid, signal.SIGKILL)
-        os.waitpid(pid, 0)
-    except OSError:
-        return False
+    if pid > 0:
+        try:
+            os.kill(pid, signal.SIGKILL)
+            os.waitpid(pid, 0)
+        except OSError:
+            return False
 
     return True
 
@@ -72,6 +73,8 @@ class BotView(RESTDispatch):
                     ### stop bot
                     if bot_disable(bot.pid):
                         bot.is_active = False
+                        bot.pid = 0
+                        bot.save()
                         self._log.info('%s stopped Bot "%s"' % (
                             bot.changed_by, bot.class_name))
                     else:
