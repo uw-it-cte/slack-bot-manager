@@ -2,9 +2,11 @@ from django.conf import settings
 from django.apps import apps
 from django.db.utils import OperationalError
 from django.middleware.csrf import get_token
+from django.db import connection
 from bot_manager.models import Bot
-from bot_manager.slackbot import SlackBot, slackbot_launch
+from bot_manager.slackbot import SlackBot
 from bot_manager.views import RESTDispatch
+from multiprocessing import Process, get_logger
 from logging import getLogger
 from importlib import import_module
 import imp
@@ -20,15 +22,9 @@ def bot_is_active(pid):
     return psutil.pid_exists(pid) if pid > 0 else False
 
 
-def bot_disable(pid):
-    if pid > 0:
-        try:
-            os.kill(pid, signal.SIGKILL)
-            os.waitpid(pid, 0)
-        except OSError:
-            return False
+def run_slackbot(bot_class):
+    bot_class(logger=get_logger()).bot()
 
-    return True
 
 class BotView(RESTDispatch):
     """ Retrieves a Bot model.
@@ -61,7 +57,7 @@ class BotView(RESTDispatch):
                         ### start bot
                         bot_module = import_module(bot.module_name)
                         bot_class = getattr(bot_module, bot.class_name)
-                        bot.pid = slackbot_launch(bot_class)
+                        bot.pid = self._launch(bot_class)
                         bot.is_active = True
 
 #                        bot.changed_by = request.user.username
@@ -71,7 +67,7 @@ class BotView(RESTDispatch):
                             bot.changed_by, bot.class_name))
                 elif bot.is_active:
                     ### stop bot
-                    if bot_disable(bot.pid):
+                    if self._kill(bot.pid):
                         bot.is_active = False
                         bot.pid = 0
                         bot.save()
@@ -85,6 +81,22 @@ class BotView(RESTDispatch):
             return self.json_response(
                 '{"error":"bot %s not found"}' % bot_id, status=404)
 
+    def _launch(self, bot_class):
+        # background the bot
+        connection.close()
+        p = Process(target=run_slackbot, args=(bot_class,))
+        p.start()
+        return p.pid
+
+    def _kill(self, pid):
+        if pid > 0:
+            try:
+                os.kill(pid, signal.SIGKILL)
+                os.waitpid(pid, 0)
+            except OSError:
+                return False
+
+        return True
 
 
 class BotListView(RESTDispatch):
