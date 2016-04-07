@@ -84,6 +84,7 @@ class BotView(RESTDispatch):
         p = Process(target=run_slackbot,
                     args=(bot_module_name, bot_class_name,
                           getattr(settings, bot_class.CONFIG),))
+        p.daemon = True
         p.start()
         return p.pid
 
