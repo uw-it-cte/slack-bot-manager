@@ -6,9 +6,9 @@ from django.db import connection
 from bot_manager.models import Bot
 from bot_manager.slackbot import SlackBot
 from bot_manager.views import RESTDispatch
-from multiprocessing import Process, get_logger, freeze_support
+from bot_manager.runbot import run_slackbot
+from multiprocessing import Process, freeze_support
 from logging import getLogger
-from importlib import import_module
 import imp
 import json
 import inspect
@@ -17,15 +17,8 @@ import psutil
 import signal
 
 
-
 def bot_is_active(pid):
     return psutil.pid_exists(pid) if pid > 0 else False
-
-
-def run_slackbot(bot_module_name, bot_class_name):
-    bot_module = import_module(bot_module_name)
-    bot_class = getattr(bot_module, bot_class_name)
-    bot_class(logger=get_logger()).bot()
 
 
 class BotView(RESTDispatch):
@@ -85,7 +78,8 @@ class BotView(RESTDispatch):
         # background the bot
         connection.close()
         freeze_support()
-        p = Process(target=run_slackbot, args=(bot_module, bot_class,))
+        p = Process(target=run_slackbot,
+                    args=(bot_module, bot_class, settings,))
         p.start()
         return p.pid
 

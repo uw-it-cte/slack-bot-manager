@@ -1,4 +1,3 @@
-from django.conf import settings
 from bot_manager.slackbot import SlackBot
 from jira import JIRA
 from random import randint
@@ -65,14 +64,14 @@ class LinkBot(SlackBot):
     """ Implements Slack Link Bot
     """
 
-    SETTINGS = "LINKBOT_CONFIG"
+    CONFIG = "LINKBOT_CONFIG"
     DESCRIPTION = "Turns ticket and incident tags into links"
 
     def process_message(self, msg):
         try:
             if msg['type'] == 'message':
                 self._log.debug('message received in %s' % msg['channel'])
-                for bot_conf in getattr(settings, self.SETTINGS)['LINKBOTS']:
+                for bot_conf in getattr(self.settings, self.CONFIG)['LINKBOTS']:
                     try:
                         link_class = globals()[bot_conf['LINK_CLASS']]
                     except KeyError:

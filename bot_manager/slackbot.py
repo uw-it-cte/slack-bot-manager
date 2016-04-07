@@ -1,4 +1,3 @@
-from django.conf import settings
 from logging import getLogger
 from slacker import Slacker
 from websocket import create_connection
@@ -7,11 +6,12 @@ import json
 
 class SlackBot(object):
 
-    SETTINGS = None
+    CONFIG = None
     DESCRIPTION = "base class"
 
-    def __init__(self, logger=None):
-        api_token = getattr(settings, self.SETTINGS)['API_TOKEN']
+    def __init__(self, settings, logger=None):
+        self.settings = settings
+        api_token = getattr(settings, self.CONFIG)['API_TOKEN']
         self._slack = Slacker(api_token)
         self._robo_id = self._slack.auth.test().body.get('user_id')
         self._websocket = None
