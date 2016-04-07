@@ -71,7 +71,7 @@ class LinkBot(SlackBot):
         try:
             if msg['type'] == 'message':
                 self._log.debug('message received in %s' % msg['channel'])
-                for bot_conf in getattr(self.settings, self.CONFIG)['LINKBOTS']:
+                for bot_conf in self.settings['LINKBOTS']:
                     try:
                         link_class = globals()[bot_conf['LINK_CLASS']]
                     except KeyError:

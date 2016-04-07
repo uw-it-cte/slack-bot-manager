@@ -9,11 +9,12 @@ from bot_manager.views import RESTDispatch
 from bot_manager.runbot import run_slackbot
 from multiprocessing import Process, freeze_support
 from logging import getLogger
+from importlib import import_module
+import psutil
 import imp
 import json
 import inspect
 import os
-import psutil
 import signal
 
 
@@ -74,22 +75,23 @@ class BotView(RESTDispatch):
             return self.json_response(
                 '{"error":"bot %s not found"}' % bot_id, status=404)
 
-    def _launch(self, bot_module, bot_class):
+    def _launch(self, bot_module_name, bot_class_name):
         # background the bot
         connection.close()
         freeze_support()
+        bot_module = import_module(bot_module_name)
+        bot_class = getattr(bot_module, bot_class_name)
         p = Process(target=run_slackbot,
-                    args=(bot_module, bot_class, settings,))
+                    args=(bot_module_name, bot_class_name,
+                          getattr(settings, bot_class.CONFIG),))
         p.start()
         return p.pid
 
     def _kill(self, pid):
-        if pid > 0:
-            try:
-                os.kill(pid, signal.SIGKILL)
-                os.waitpid(pid, 0)
-            except OSError:
-                return False
+        try:
+            psutil.Process(pid).terminate()
+        except:
+            return False
 
         return True
 

@@ -11,7 +11,7 @@ class SlackBot(object):
 
     def __init__(self, settings, logger=None):
         self.settings = settings
-        api_token = getattr(settings, self.CONFIG)['API_TOKEN']
+        api_token = self.settings['API_TOKEN']
         self._slack = Slacker(api_token)
         self._robo_id = self._slack.auth.test().body.get('user_id')
         self._websocket = None
