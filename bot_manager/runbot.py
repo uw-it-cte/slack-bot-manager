@@ -15,6 +15,6 @@ def run_slackbot(bot_module_name, bot_class_name, settings):
 
     try:
         bot_class(settings, logger=logger).bot()
-    except:
-        logger.error('run_slackbot instantiate FAILED')
+    except Exception as ex:
+        logger.error('run_slackbot instantiate FAILED: %s' % ex)
         return

@@ -8,7 +8,8 @@ class LinkBotSeenException(Exception): pass
 
 
 class LinkBotMessage(object):
-    def __init__(self, conf):
+    def __init__(self, conf, logger=None):
+        self._log = logger
         self._conf = conf
         self._seen = []
         self._said = []
@@ -46,7 +47,9 @@ class JiraLinkBotMessage(LinkBotMessage):
                                     self._conf['JIRA_PASSWORD']))
             issue = jira.issue(ticket)
             msg += '>>> %s' % self._escape(issue.fields.summary)
-        except:
+        except Exception as ex:
+            if self._log:
+                self._log.error('JIRA: %s' % (ex))
             pass
 
         return msg
@@ -77,7 +80,7 @@ class LinkBot(SlackBot):
                     except KeyError:
                         link_class = LinkBotMessage
 
-                    linkbot = link_class(bot_conf)
+                    linkbot = link_class(bot_conf, logger=self._log)
 
                     matches = re.findall(
                         r'(\A|\W)(%s)(\W|\Z)' % bot_conf['MATCH'],

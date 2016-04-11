@@ -156,6 +156,11 @@ LOGGING = {
             'propagate': True,
             'level':'DEBUG',
         },
+        'multiprocessing' : {
+            'handlers':['file'],
+            'propagate': True,
+            'level':'DEBUG',
+        },
         'bot_manager': {
             'handlers': ['file'],
             'level': 'DEBUG',
@@ -188,7 +193,7 @@ LINKBOT_CONFIG = {
     'API_TOKEN': os.environ.get('LINKBOT_API_TOKEN'),
     'LINKBOTS': [
         {
-            'MATCH': '(req|inc)[0-9]+',
+            'MATCH': '(%s)[0-9]+' % ('|'.join(['req', 'inc'])),
             'LINK': '<https://uw.service-now.com/u_simple_requests.do?sysparm_type=labels&sysparm_table=u_simple_requests&sysparm_query=number=%s|%s>',
             'QUIPS': LINKBOT_QUIPS
         },
