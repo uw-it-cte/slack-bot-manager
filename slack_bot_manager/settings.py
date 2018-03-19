@@ -26,8 +26,8 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
-SUPPORTTOOLS_PARENT_APP = 'UW-IT ACA Slack'
-SUPPORTTOOLS_PARENT_APP_URL = 'https://uw-it-aca.slack.com'
+SUPPORTTOOLS_PARENT_APP = 'ASA Slack'
+SUPPORTTOOLS_PARENT_APP_URL = 'https://uw-asa.slack.com'
 
 # Application definition
 
