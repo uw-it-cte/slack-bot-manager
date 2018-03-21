@@ -22,8 +22,6 @@ SECRET_KEY = '&nno#55zzagdg+c8%=q$j&=_@x-s%csycoz_-!d$6+#x_p2a^$'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-TEMPLATE_DEBUG = True
-
 ALLOWED_HOSTS = []
 
 SUPPORTTOOLS_PARENT_APP = 'ASA Slack'
@@ -63,6 +61,7 @@ TEMPLATES = [
         'DIRS': [],
         'APP_DIRS': True,
         'OPTIONS': {
+            'debug': DEBUG,
             'context_processors': [
                 'django.contrib.auth.context_processors.auth',
                 'django.core.context_processors.debug',
