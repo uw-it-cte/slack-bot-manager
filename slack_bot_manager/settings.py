@@ -26,8 +26,8 @@ TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = []
 
-SUPPORTTOOLS_PARENT_APP = 'UW-IT ACA Slack'
-SUPPORTTOOLS_PARENT_APP_URL = 'https://uw-it-aca.slack.com'
+SUPPORTTOOLS_PARENT_APP = 'ASA Slack'
+SUPPORTTOOLS_PARENT_APP_URL = 'https://uw-asa.slack.com'
 
 # Application definition
 
@@ -57,18 +57,27 @@ MIDDLEWARE_CLASSES = (
     'django_mobileesp.middleware.UserAgentDetectionMiddleware',
 )
 
-TEMPLATE_CONTEXT_PROCESSORS = (
-    'django.contrib.auth.context_processors.auth',
-    'django.core.context_processors.debug',
-    'django.core.context_processors.i18n',
-    'django.core.context_processors.media',
-    'django.core.context_processors.request',
-    'django.core.context_processors.static',
-    'django.core.context_processors.tz',
-    'django.contrib.messages.context_processors.messages',
-    'supporttools.context_processors.supportools_globals',
-    'supporttools.context_processors.has_less_compiled',
-)
+TEMPLATES = [
+    {
+        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+        'DIRS': [],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'context_processors': [
+                'django.contrib.auth.context_processors.auth',
+                'django.core.context_processors.debug',
+                'django.core.context_processors.i18n',
+                'django.core.context_processors.media',
+                'django.core.context_processors.request',
+                'django.core.context_processors.static',
+                'django.core.context_processors.tz',
+                'django.contrib.messages.context_processors.messages',
+                'supporttools.context_processors.supportools_globals',
+                'supporttools.context_processors.has_less_compiled',
+            ],
+        },
+    },
+]
 
 from django_mobileesp.detector import agent
 DETECT_USER_AGENTS = {
