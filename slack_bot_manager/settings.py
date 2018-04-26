@@ -42,6 +42,7 @@ INSTALLED_APPS = (
     'supporttools',
     'bot_manager',
     'linkbot',
+    'groups',
 )
 
 MIDDLEWARE_CLASSES = (

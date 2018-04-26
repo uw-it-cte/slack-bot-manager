@@ -9,3 +9,4 @@ jira
 --find-links wheelhouse
 psutil==3.4.2
 mysql-python
+UW-RestClients-GWS
